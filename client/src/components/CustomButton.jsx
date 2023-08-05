@@ -10,13 +10,14 @@ const CustomButton = ({type , title , handleClick,customStyles}) => {
     if(type === 'filled'){
         return {
             backgroundColor: snap.color,
-            color: '#fff'
+            color: 'black'
+            
         }
     }   
     }
 
   return (
-    <button className={`px-2 py-1.5 rounded-md ${customStyles} `} style={generateStyle(type)}>
+    <button className={`px-2 py-1.5 rounded-md ${customStyles} `} onClick={handleClick} style={generateStyle(type)}>
         {title}
     </button>
   )

@@ -1,13 +1,12 @@
 import { proxy } from "valtio";
-import {} from "./"
 
 const state = proxy({
     intro :true,
     color :'#EFBD48',
     isLogoTexture:true,
     isFullTexture:false,
-    logoDecal:"./three.js",
-    fullDecal:"./three.js",
+    logoDecal:"./public/threejs.png",
+    fullDecal:"./public/threejs.png",
 });
 
 export default state;
