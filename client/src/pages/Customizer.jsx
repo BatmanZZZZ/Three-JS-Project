@@ -5,19 +5,103 @@ import config from "../config/config"
 import {download} from '../assets'
 import {downloadCanvasToImage , reader} from "../config/helpers"
 import {EditorTabs , FilterTabs , DecalTypes} from '../config/constants'
-import { fadeAnimation,slideAnimation } from "../config/motion"
+import { slideAnimation } from "../config/motion"
 import AIpicker from "../components/AIpicker"
 import FilePicker from "../components/FilePicker"
+import ColorPicker from '../components/ColorPicker'
 import Tab from "../components/Tab"
 import CustomButton from "../components/CustomButton"
 import state from "../store"
 
 
-
-
-
 const Customizer = () => {
+
   const snap = useSnapshot(state);
+
+  const [activeEditorTabs , seActiveEditorTabs]=useState("");
+  const [File,setFile] =useState("");
+  const [Prompt , setPrompt]=useState("");
+  const [generatingImg , setGeneratingImg]=useState(false);
+  const [activeFilterTabs,setActiveFilterTabs]=useState({
+    logoShirt:true,
+    stylishShirt:false
+  });
+
+  const handleSubmit=async (type)=>{
+    if(!prompt) return alert("Please Enter prompt");
+
+    try {
+      alert("hello")
+    } catch (error) {
+      alert(error)
+    }finally{
+      setGeneratingImg(false);
+      seActiveEditorTabs("");
+    }
+
+  }
+
+  const generateTabContent=()=>{
+    switch(activeEditorTabs){
+      case "colorpicker" :
+        return <ColorPicker />;
+      case "filepicker" :
+        return <FilePicker 
+        file={File}
+        setfile={setFile}
+        readfile={readFile}
+        />;
+      case "aipicker" :
+        return <AIpicker 
+        prompt={Prompt}
+        setprompt={setPrompt}
+        generatinhimg={generatingImg}
+        handlesubmit={handleSubmit}
+        />;
+      default:
+        return null;
+
+    }
+  }
+  
+  
+
+  const handleDecal=(type,result)=>{
+    const decalType = DecalTypes[type];
+    state[decalType.stateProperty]=result;
+
+    if(!activeFilterTabs[decalType.filterTab]){
+      handleActiveFilterTabs(decalType.filterTab)
+    }
+  }
+
+  const handleActiveFilterTabs=(tabName)=>{
+    switch(tabName){
+      case "logoShirt" :
+        state.isLogoTexture=!activeFilterTabs[tabName]
+        break;
+      case "stylishShirt" :
+        state.isFullTexture=!activeFilterTabs[tabName]
+        break;
+      default:
+        state.isLogoTexture=true;
+        state.isFullTexture=false;
+    }
+    setActiveFilterTabs((prevState)=>{
+      return{
+        ...prevState,
+        [tabName]:!prevState[tabName]
+      }
+    })
+  }
+
+  const readFile=(type)=>{
+    reader(File).then((result)=>{
+      handleDecal(type,result)
+      seActiveEditorTabs("");
+    })
+  }
+
   return (
     <AnimatePresence>
       {!snap.intro &&(
@@ -27,9 +111,10 @@ const Customizer = () => {
             <div className="editortabs-container tabs"> 
             {
                EditorTabs.map((tab) => (
-                  <Tab key={tab.name} tab={tab} handleClick={()=>{}} />
+                  <Tab key={tab.name} tab={tab} handleClick={()=>{seActiveEditorTabs(tab.name)}} />
                 ))
             }
+            {generateTabContent()}
             </div>
           </div>
         </motion.div>
@@ -46,8 +131,8 @@ const Customizer = () => {
             FilterTabs.map((tab) => (
               <Tab key={tab.name} tab={tab} 
               isFilterTab
-              isActiveTab=""
-              handleClick={()=>{}}
+              isActiveTab={activeFilterTabs[tab.name]}
+              handleClick={()=>{handleActiveFilterTabs(tab.name)}}
               />
             ))
           }

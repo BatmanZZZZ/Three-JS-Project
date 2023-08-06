@@ -1,38 +1,35 @@
 import React, { useRef } from 'react'
-import { easing } from 'maath'
 import { useFrame } from '@react-three/fiber'
-import { AccumulativeShadows, RandomizedLight } from '@react-three/drei';
+import { Plane, Shadow } from '@react-three/drei'
 
 const Backdrop = () => {
-  const shadows = useRef();
+  const shadows = useRef()
+
+  useFrame(({ camera }) => {
+    // Make the shadows follow the camera
+    shadows.current.lookAt(camera.position)
+  })
 
   return (
-    <AccumulativeShadows
-      ref={shadows}
-      temporal
-      frames={60}
-      alphaTest={0.85}
-      scae={10}
-      rotation={[Math.PI / 2, 0, 0]}
-      position={[0, 0, -0.14]}
-    >
-      <RandomizedLight 
-        amount={4}
-        radius={9}
-        intensity={0.55}
-        ambient={0.70}
-        decay={0}
-        position={[5, 5, -10]}
-      />
-      <RandomizedLight 
-        amount={4}
-        radius={5}
-        intensity={0.60}
-        ambient={0.80}
-        decay={0}
-        position={[-5, 5, -9]}
-      />
-    </AccumulativeShadows>
+    <>
+      {/* White Background Plane */}
+      <Plane args={[100, 100]} position={[0, 0, -1]} rotation={[0, 0, 0]} receiveShadow>
+        <meshStandardMaterial color="#fff" />
+      </Plane>
+
+      {/* Shadows */}
+      <Shadow ref={shadows}>
+        <spotLight
+          intensity={1}
+          angle={Math.PI / 4}
+          penumbra={1}
+          position={[0, 0, 0]}
+          castShadow
+          shadow-mapSize-width={2048}
+          shadow-mapSize-height={2048}
+        />
+      </Shadow>
+    </>
   )
 }
 

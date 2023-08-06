@@ -21,7 +21,7 @@ const Home = () => {
                         </p>
                     </motion.div>
                     <motion.div className='flex flex-col gap-5' {...headContentAnimation}>
-                        <p className='max-w-md font-normal text-gray-600 text base' >
+                        <p className='max-w-md font-normal text-white-600 text base' >
                             Create your unique and exclusive 3D T-Shirt with our brand new 3D customization tool
                             <strong> Unleash your Imainaion </strong> and define your own style
                         </p>
