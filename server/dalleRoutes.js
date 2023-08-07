@@ -6,7 +6,7 @@ dotenv.config();
 
 const router = express.Router();
 
-const key = ""
+const key = "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"
 
 const config = new Configuration({
     organization:"org-FyWGamF06GIG8DFb88kvXUhJ",
@@ -23,9 +23,9 @@ router.route('/').get((req, res) => {
 
 router.route('/').post(async (req, res) => {
     try {
-        const {prompt} = req.body;
+        const {Prompt} = req.body;
         const response = await openai.createImage({
-            prompt : prompt,
+            prompt : Prompt,
             n:1,
             size:"1024x1024",
             response_format:'b64_json'
@@ -37,7 +37,8 @@ router.route('/').post(async (req, res) => {
             },
         })
 
-        const image = response.data.data[0].image;
+        const image = response.data.data[0].b64_json;
+        console.log(image);
         res.status(200).json({
             photo: image
         })

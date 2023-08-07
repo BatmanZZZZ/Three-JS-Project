@@ -27,19 +27,40 @@ const Customizer = () => {
     stylishShirt:false
   });
 
-  const handleSubmit=async (type)=>{
-    if(!prompt) return alert("Please Enter prompt");
-
+  const handleSubmit = async (type) => {
+    if (!Prompt) return alert("Please Enter prompt");
+  
     try {
-      alert("hello")
+      console.log("generating img");
+      setGeneratingImg(true);
+      const response = await fetch("http://localhost:8082/api/v1/dalle", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          Prompt,
+        }),
+      });
+  
+      const data = await response.json();
+      console.log("Response data:", data); // Add this line to check the response data
+  
+      if (data.photo) {
+        handleDecal(type, `data:image/png;base64,${data.photo}`);
+      } else {
+        console.error("Invalid image data in the response:", data.photo);
+        // You can show an error message here or handle the error as needed
+      }
     } catch (error) {
-      alert(error)
-    }finally{
+      console.error("Error in API call:", error);
+      alert("An error occurred while processing the request.");
+    } finally {
       setGeneratingImg(false);
       seActiveEditorTabs("");
     }
-
-  }
+  };
+  
 
   const generateTabContent=()=>{
     switch(activeEditorTabs){
@@ -54,9 +75,9 @@ const Customizer = () => {
       case "aipicker" :
         return <AIpicker 
         prompt={Prompt}
-        setprompt={setPrompt}
-        generatinhimg={generatingImg}
-        handlesubmit={handleSubmit}
+            setprompt={setPrompt}
+            generatingimg={generatingImg}
+            handlesubmit={handleSubmit}
         />;
       default:
         return null;
