@@ -6,7 +6,7 @@ dotenv.config();
 
 const router = express.Router();
 
-const key = "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"
+const key = ""
 
 const config = new Configuration({
     organization:"org-FyWGamF06GIG8DFb88kvXUhJ",
